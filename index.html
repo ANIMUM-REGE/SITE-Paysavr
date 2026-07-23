@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Paysavr — find the charges you forgot you're paying</title>
+<meta name="description" content="Paysavr reads your recurring bills and subscriptions, flags what you no longer use, and finds cheaper ways to keep what you do. From $2/month. Join the waitlist.">
+<style>
+  :root{
+    --paper:#FBFBF9;
+    --ink:#1C2B33;
+    --muted:#5E7079;
+    --line:#E3E4DE;
+    --highlight:#FFE066;
+    --save:#177245;
+    --flag:#B4552D;
+    --card:#FFFFFF;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{font-size:18px}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  .display{font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif}
+  .mono{font-family:ui-monospace,Menlo,Consolas,"Courier New",monospace}
+  .wrap{max-width:1060px;margin:0 auto;padding:0 24px}
+
+  a{color:var(--ink)}
+  a:focus-visible,button:focus-visible{outline:3px solid var(--ink);outline-offset:3px;border-radius:2px}
+
+  /* header */
+  header{padding:28px 0}
+  header .wrap{display:flex;align-items:baseline;justify-content:space-between}
+  .wordmark{font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;font-size:1.5rem;font-weight:700;letter-spacing:-.01em;text-decoration:none}
+  .wordmark span{color:var(--save)}
+  header nav a{color:var(--muted);text-decoration:none;font-size:.85rem;margin-left:20px}
+  header nav a:hover{color:var(--ink);text-decoration:underline}
+
+  /* hero */
+  .hero{padding:44px 0 72px}
+  .hero .wrap{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:center}
+  h1{font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;font-weight:700;font-size:2.7rem;line-height:1.15;letter-spacing:-.015em;margin-bottom:20px}
+  h1 em{font-style:normal;position:relative;white-space:nowrap}
+  h1 em::after{
+    content:"";position:absolute;left:-2%;right:-2%;bottom:4%;height:46%;
+    background:var(--highlight);z-index:-1;transform:skewY(-.6deg);border-radius:2px;
+  }
+  .hero p.lede{font-size:1.15rem;color:var(--muted);max-width:34ch;margin-bottom:12px}
+  .hero p.price{font-size:1rem;margin-bottom:28px}
+  .hero p.price strong{color:var(--save)}
+
+  .cta{display:inline-block;background:var(--ink);color:var(--paper);text-decoration:none;
+    font-size:1.05rem;font-weight:600;padding:15px 28px;border-radius:8px}
+  .cta:hover{background:#0f1b21}
+  .cta-note{display:block;margin-top:12px;font-size:.85rem;color:var(--muted)}
+  .cta-note a{color:var(--muted)}
+
+  /* the statement — signature element */
+  .statement{
+    background:var(--card);border:1px solid var(--line);border-radius:10px;
+    box-shadow:0 12px 30px rgba(28,43,51,.08);
+    padding:26px 26px 20px;transform:rotate(.4deg);
+  }
+  .statement h2{font-size:.72rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);
+    border-bottom:1px solid var(--line);padding-bottom:12px;margin-bottom:6px;
+    display:flex;justify-content:space-between}
+  .statement h2 .mono{font-weight:400}
+  .row{padding:11px 2px;border-bottom:1px dotted var(--line);font-size:.85rem}
+  .row:last-of-type{border-bottom:none}
+  .row .line{display:flex;gap:14px;white-space:nowrap}
+  .row .date{color:var(--muted)}
+  .row .payee{flex:1;overflow:hidden;text-overflow:ellipsis}
+  .row .amt{font-variant-numeric:tabular-nums}
+  .row.marked .payee,.row.marked .amt{
+    background:linear-gradient(104deg,transparent 1%,var(--highlight) 2%,var(--highlight) 98%,transparent 99%);
+    border-radius:2px;padding:0 3px;margin:0 -3px;
+  }
+  .note{display:block;margin-top:5px;font-size:.83rem;line-height:1.45;
+    font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;font-style:italic}
+  .note.flag{color:var(--flag)}
+  .note.save{color:var(--save)}
+  .note::before{content:"↳ ";font-style:normal}
+  .statement footer{margin-top:14px;padding-top:12px;border-top:1px solid var(--line);
+    font-size:.83rem;display:flex;justify-content:space-between;color:var(--muted)}
+  .statement footer strong{color:var(--save);font-size:.95rem}
+
+  /* sections */
+  section{padding:64px 0;border-top:1px solid var(--line)}
+  .eyebrow{font-size:.72rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:14px}
+  h3.section-title{font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;font-size:1.8rem;font-weight:700;letter-spacing:-.01em;margin-bottom:34px;max-width:24ch}
+
+  .finds{display:grid;grid-template-columns:repeat(3,1fr);gap:28px}
+  .find h4{font-size:1.05rem;margin-bottom:8px}
+  .find p{font-size:.95rem;color:var(--muted)}
+  .find .tag{display:inline-block;font-size:.78rem;padding:2px 8px;border-radius:4px;margin-bottom:12px}
+  .tag.flag{background:#F7E5DC;color:var(--flag)}
+  .tag.save{background:#DFEEE6;color:var(--save)}
+  .tag.plain{background:#EFF0EA;color:var(--muted)}
+
+  .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:28px;counter-reset:step}
+  .step{counter-increment:step}
+  .step h4{font-size:1.05rem;margin-bottom:8px}
+  .step h4::before{
+    content:counter(step);display:inline-flex;align-items:center;justify-content:center;
+    width:1.7em;height:1.7em;margin-right:.55em;border-radius:50%;
+    background:var(--ink);color:var(--paper);font-size:.8em;font-weight:700;
+    font-family:ui-monospace,Menlo,monospace;
+  }
+  .step p{font-size:.95rem;color:var(--muted)}
+
+  .promise{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:34px 36px;
+    display:grid;grid-template-columns:1fr 1fr;gap:36px}
+  .promise h4{font-size:1.05rem;margin-bottom:8px}
+  .promise p{font-size:.95rem;color:var(--muted)}
+  .promise a{color:var(--ink)}
+
+  .join{text-align:center}
+  .join h3{margin-left:auto;margin-right:auto}
+  .join .lede{color:var(--muted);max-width:44ch;margin:0 auto 28px}
+
+  footer.site{padding:44px 0 64px;border-top:1px solid var(--line);color:var(--muted);font-size:.85rem}
+  footer.site .wrap{display:grid;gap:10px}
+  footer.site a{color:var(--muted)}
+
+  @media (prefers-reduced-motion:no-preference){
+    .statement .row.marked .payee,.statement .row.marked .amt{
+      background-size:0% 100%;background-repeat:no-repeat;
+      animation:sweep .5s ease-out forwards;
+    }
+    .row.marked:nth-of-type(2) .payee,.row.marked:nth-of-type(2) .amt{animation-delay:.5s}
+    .row.marked:nth-of-type(4) .payee,.row.marked:nth-of-type(4) .amt{animation-delay:1s}
+    .row.marked:nth-of-type(5) .payee,.row.marked:nth-of-type(5) .amt{animation-delay:1.5s}
+    @keyframes sweep{from{background-size:0% 100%}to{background-size:100% 100%}}
+  }
+
+  @media (max-width:860px){
+    html{font-size:17px}
+    .hero .wrap{grid-template-columns:1fr;gap:44px}
+    .hero{padding-top:20px}
+    h1{font-size:2.15rem}
+    .finds,.steps,.promise{grid-template-columns:1fr}
+    .statement{transform:none}
+    .row .line{white-space:normal}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <a class="wordmark" href="/">pay<span>savr</span></a>
+    <nav>
+      <a href="#how">How it works</a>
+      <a href="privacy.html">Privacy</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <div class="hero">
+    <div class="wrap">
+      <div>
+        <h1>Find the charges you <em>forgot</em> you're paying.</h1>
+        <p class="lede">Paysavr reads your recurring bills and subscriptions, flags what you no longer use, and finds cheaper ways to keep what you do.</p>
+        <p class="price">Planned price: <strong>from $2/month</strong>. No free-trial tricks.</p>
+        <a class="cta" href="mailto:hello@paysavr.com?subject=Waitlist&body=Please%20add%20me%20to%20the%20Paysavr%20waitlist.%0A%0AName%20(optional)%3A%20">Join the waitlist by email</a>
+        <span class="cta-note">Opens your mail app — or just write to <a href="mailto:hello@paysavr.com">hello@paysavr.com</a>. That one email is all we collect.</span>
+      </div>
+      <div class="statement mono" role="img" aria-label="An example bank statement excerpt with three recurring charges highlighted: a gym membership unused since October, two streaming services that are cheaper as a bundle, and two overlapping cloud storage plans. Found: $23.49 a month.">
+        <h2><span>Recurring charges</span> <span class="mono">March</span></h2>
+        <div class="row">
+          <span class="line"><span class="date">MAR 03</span><span class="payee">STREAMVID MONTHLY</span><span class="amt">$15.99</span></span>
+        </div>
+        <div class="row marked">
+          <span class="line"><span class="date">MAR 05</span><span class="payee">GYMCO MEMBERSHIP</span><span class="amt">$34.00</span></span>
+          <span class="note flag">last visit October — still want this?</span>
+        </div>
+        <div class="row">
+          <span class="line"><span class="date">MAR 09</span><span class="payee">POWER &amp; LIGHT CO</span><span class="amt">$88.20</span></span>
+        </div>
+        <div class="row marked">
+          <span class="line"><span class="date">MAR 11</span><span class="payee">FLICKPLUS + SPORTSMAX</span><span class="amt">$22.98</span></span>
+          <span class="note save">same two as a bundle: $16.99 — save $5.99/mo</span>
+        </div>
+        <div class="row marked">
+          <span class="line"><span class="date">MAR 18</span><span class="payee">CLOUDBOX 2TB</span><span class="amt">$9.99</span></span>
+          <span class="note flag">overlaps PhotoVault ($4.99) — you're storing twice</span>
+        </div>
+        <footer><span>Found this month</span><strong>$23.49/mo</strong></footer>
+      </div>
+    </div>
+  </div>
+
+  <section>
+    <div class="wrap">
+      <p class="eyebrow">What it finds</p>
+      <h3 class="section-title">Three kinds of money that quietly leak.</h3>
+      <div class="finds">
+        <div class="find">
+          <span class="tag flag">Forgotten charges</span>
+          <h4>Fees you stopped noticing</h4>
+          <p>Small recurring charges hide in plain sight — the price that crept up, the plan you meant to cancel, the fee that appeared one month and never left.</p>
+        </div>
+        <div class="find">
+          <span class="tag flag">Unused subscriptions</span>
+          <h4>Things you pay for but don't use</h4>
+          <p>Paysavr shows you what you're actually getting for each subscription, so "I should cancel that someday" becomes a five-minute decision.</p>
+        </div>
+        <div class="find">
+          <span class="tag save">Bundle savings</span>
+          <h4>Cheaper ways to keep what you use</h4>
+          <p>Sometimes the win isn't canceling — it's paying less for the same thing, like two streaming services you buy separately when the bundle costs less.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="how">
+    <div class="wrap">
+      <p class="eyebrow">How it works</p>
+      <h3 class="section-title">Plain steps, no homework.</h3>
+      <div class="steps">
+        <div class="step">
+          <h4>Show it your recurring bills</h4>
+          <p>Point Paysavr at your subscriptions and recurring charges. It builds one clear list of everything you pay monthly or yearly.</p>
+        </div>
+        <div class="step">
+          <h4>See what's flagged</h4>
+          <p>Forgotten charges, subscriptions you don't use, and cheaper bundles for the ones you keep — each shown with the dollars attached.</p>
+        </div>
+        <div class="step">
+          <h4>Decide, and keep the difference</h4>
+          <p>You make the calls. Paysavr just makes sure you can see what you're deciding about.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <p class="eyebrow">The fine print, up front</p>
+      <div class="promise">
+        <div>
+          <h4>Honest pricing</h4>
+          <p>Planned price is $2–5 a month, depending on plan. Priced so the first thing it finds usually pays for the year. Cancel anytime, no dark patterns.</p>
+        </div>
+        <div>
+          <h4>Honest privacy</h4>
+          <p>Joining the waitlist is literally just an email in our inbox — your address and, if you like, your name. No forms, no trackers, no analytics on this page, and no financial data collected. <a href="privacy.html">Read the privacy page</a>.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="join">
+    <div class="wrap">
+      <p class="eyebrow">Early access</p>
+      <h3 class="section-title">Be first in line when Paysavr opens.</h3>
+      <p class="lede">Waitlist members get first access and the founding price. One email now, one email from us when it's ready.</p>
+      <a class="cta" href="mailto:hello@paysavr.com?subject=Waitlist&body=Please%20add%20me%20to%20the%20Paysavr%20waitlist.%0A%0AName%20(optional)%3A%20">Join the waitlist by email</a>
+      <span class="cta-note">Sends to hello@paysavr.com with the subject "Waitlist" — that's it.</span>
+    </div>
+  </section>
+</main>
+
+<footer class="site">
+  <div class="wrap">
+    <p>Paysavr shows you information about your own recurring spending and options you may want to consider. It is not financial, investment, or tax advice.</p>
+    <p>Questions: <a href="mailto:hello@paysavr.com">hello@paysavr.com</a> · <a href="privacy.html">Privacy</a></p>
+    <p>Paysavr is made by Animum Rege LLC. © 2026 Animum Rege LLC.</p>
+  </div>
+</footer>
+
+</body>
+</html>
