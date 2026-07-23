@@ -75,7 +75,7 @@
   .row .date{color:var(--muted)}
   .row .payee{flex:1;overflow:hidden;text-overflow:ellipsis}
   .row .amt{font-variant-numeric:tabular-nums}
-  .row.marked .payee,.row.marked .amt{
+  .row.marked .payee .hl,.row.marked .amt{
     background:linear-gradient(104deg,transparent 1%,var(--highlight) 2%,var(--highlight) 98%,transparent 99%);
     border-radius:2px;padding:0 3px;margin:0 -3px;
   }
@@ -127,13 +127,13 @@
   footer.site a{color:var(--muted)}
 
   @media (prefers-reduced-motion:no-preference){
-    .statement .row.marked .payee,.statement .row.marked .amt{
+    .statement .row.marked .payee .hl,.statement .row.marked .amt{
       background-size:0% 100%;background-repeat:no-repeat;
       animation:sweep .5s ease-out forwards;
     }
-    .row.marked:nth-of-type(2) .payee,.row.marked:nth-of-type(2) .amt{animation-delay:.5s}
-    .row.marked:nth-of-type(4) .payee,.row.marked:nth-of-type(4) .amt{animation-delay:1s}
-    .row.marked:nth-of-type(5) .payee,.row.marked:nth-of-type(5) .amt{animation-delay:1.5s}
+    .row.marked:nth-of-type(2) .payee .hl,.row.marked:nth-of-type(2) .amt{animation-delay:.5s}
+    .row.marked:nth-of-type(4) .payee .hl,.row.marked:nth-of-type(4) .amt{animation-delay:1s}
+    .row.marked:nth-of-type(5) .payee .hl,.row.marked:nth-of-type(5) .amt{animation-delay:1.5s}
     @keyframes sweep{from{background-size:0% 100%}to{background-size:100% 100%}}
   }
 
@@ -176,18 +176,18 @@
           <span class="line"><span class="date">MAR 03</span><span class="payee">STREAMVID MONTHLY</span><span class="amt">$15.99</span></span>
         </div>
         <div class="row marked">
-          <span class="line"><span class="date">MAR 05</span><span class="payee">GYMCO MEMBERSHIP</span><span class="amt">$34.00</span></span>
+          <span class="line"><span class="date">MAR 05</span><span class="payee"><span class="hl">GYMCO MEMBERSHIP</span></span><span class="amt">$34.00</span></span>
           <span class="note flag">last visit October — still want this?</span>
         </div>
         <div class="row">
           <span class="line"><span class="date">MAR 09</span><span class="payee">POWER &amp; LIGHT CO</span><span class="amt">$88.20</span></span>
         </div>
         <div class="row marked">
-          <span class="line"><span class="date">MAR 11</span><span class="payee">FLICKPLUS + SPORTSMAX</span><span class="amt">$22.98</span></span>
+          <span class="line"><span class="date">MAR 11</span><span class="payee"><span class="hl">FLICKPLUS + SPORTSMAX</span></span><span class="amt">$22.98</span></span>
           <span class="note save">same two as a bundle: $16.99 — save $5.99/mo</span>
         </div>
         <div class="row marked">
-          <span class="line"><span class="date">MAR 18</span><span class="payee">CLOUDBOX 2TB</span><span class="amt">$9.99</span></span>
+          <span class="line"><span class="date">MAR 18</span><span class="payee"><span class="hl">CLOUDBOX 2TB</span></span><span class="amt">$9.99</span></span>
           <span class="note flag">overlaps PhotoVault ($4.99) — you're storing twice</span>
         </div>
         <footer><span>Found this month</span><strong>$23.49/mo</strong></footer>
