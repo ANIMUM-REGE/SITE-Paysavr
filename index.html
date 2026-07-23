@@ -54,10 +54,30 @@
   .hero p.price strong{color:var(--save)}
 
   .cta{display:inline-block;background:var(--ink);color:var(--paper);text-decoration:none;
-    font-size:1.05rem;font-weight:600;padding:15px 28px;border-radius:8px}
+    font-size:1.05rem;font-weight:600;padding:15px 28px;border-radius:8px;border:0;cursor:pointer;font-family:inherit}
   .cta:hover{background:#0f1b21}
+  .cta:disabled{opacity:.55;cursor:default}
   .cta-note{display:block;margin-top:12px;font-size:.85rem;color:var(--muted)}
   .cta-note a{color:var(--muted)}
+
+  /* waitlist form */
+  .wl-row{display:flex;gap:10px;max-width:440px}
+  .wl-row input[type=email]{
+    flex:1;min-width:0;font:inherit;font-size:1rem;color:var(--ink);
+    background:var(--card);border:1px solid var(--line);border-radius:8px;padding:14px 16px}
+  .wl-row input[type=email]:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
+  .wl-consent{display:flex;gap:10px;align-items:flex-start;margin-top:14px;max-width:440px;
+    font-size:.85rem;color:var(--muted);cursor:pointer}
+  .wl-consent input{margin-top:3px;width:16px;height:16px;flex:none;accent-color:var(--save);cursor:pointer}
+  .wl-status{display:block;margin-top:12px;font-size:.9rem;min-height:1.4em}
+  .wl-status.err{color:var(--flag)}
+  .wl-status a{color:inherit}
+  .wl-done{font-size:1.05rem;color:var(--save);font-weight:600;max-width:440px}
+  .wl-done small{display:block;margin-top:8px;font-weight:400;font-size:.85rem;color:var(--muted)}
+  .hp{position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden}
+  .join .wl-row,.join .wl-consent,.join .wl-done{margin-left:auto;margin-right:auto}
+  .join .wl-consent{text-align:left}
+  @media (max-width:520px){.wl-row{flex-direction:column}.wl-row .cta{width:100%}}
 
   /* the statement — signature element */
   .statement{
@@ -167,8 +187,18 @@
         <h1>Find the charges you <em>forgot</em> you're paying.</h1>
         <p class="lede">Paysavr reads your recurring bills and subscriptions, flags what you no longer use, and finds cheaper ways to keep what you do.</p>
         <p class="price">Planned price: <strong>from $2/month</strong>. No free-trial tricks.</p>
-        <a class="cta" href="mailto:hello@paysavr.com?subject=Waitlist&body=Please%20add%20me%20to%20the%20Paysavr%20waitlist.%0A%0AName%20(optional)%3A%20">Join the waitlist by email</a>
-        <span class="cta-note">Opens your mail app — or just write to <a href="mailto:hello@paysavr.com">hello@paysavr.com</a>. That one email is all we collect.</span>
+        <form class="wl-form" novalidate>
+          <div class="wl-row">
+            <label class="hp" aria-hidden="true">Company <input type="text" name="company" tabindex="-1" autocomplete="off"></label>
+            <input type="email" name="email" required placeholder="you@example.com" aria-label="Your email address" autocomplete="email">
+            <button class="cta" type="submit">Join the waitlist</button>
+          </div>
+          <label class="wl-consent"><input type="checkbox" name="consent">
+            <span>Email me when Paysavr opens. That's the only thing this address is used for, and you can leave the list any time.</span></label>
+          <span class="wl-status" role="status"></span>
+        </form>
+        <noscript><span class="cta-note">Email <a href="mailto:hello@paysavr.com?subject=Waitlist">hello@paysavr.com</a> with the subject "Waitlist" to join.</span></noscript>
+        <span class="cta-note">One field, one checkbox — your address is all we collect. Prefer email? <a href="mailto:hello@paysavr.com?subject=Waitlist">hello@paysavr.com</a> works too.</span>
       </div>
       <div class="statement mono" role="img" aria-label="An example bank statement excerpt with three recurring charges highlighted: a gym membership unused since October, two streaming services that are cheaper as a bundle, and two overlapping cloud storage plans. Found: $23.49 a month.">
         <h2><span>Recurring charges</span> <span class="mono">March</span></h2>
@@ -250,7 +280,7 @@
         </div>
         <div>
           <h4>Honest privacy</h4>
-          <p>Joining the waitlist is literally just an email in our inbox — your address and, if you like, your name. No forms, no trackers, no analytics on this page, and no financial data collected. <a href="privacy.html">Read the privacy page</a>.</p>
+          <p>Joining the waitlist stores exactly two things, in our own database: your email address and when you joined. No trackers, no analytics, no cookies, no third-party services on this page — and no financial data collected. <a href="privacy.html">Read the privacy page</a>.</p>
         </div>
       </div>
     </div>
@@ -260,12 +290,66 @@
     <div class="wrap">
       <p class="eyebrow">Early access</p>
       <h3 class="section-title">Be first in line when Paysavr opens.</h3>
-      <p class="lede">Waitlist members get first access and the founding price. One email now, one email from us when it's ready.</p>
-      <a class="cta" href="mailto:hello@paysavr.com?subject=Waitlist&body=Please%20add%20me%20to%20the%20Paysavr%20waitlist.%0A%0AName%20(optional)%3A%20">Join the waitlist by email</a>
-      <span class="cta-note">Sends to hello@paysavr.com with the subject "Waitlist" — that's it.</span>
+      <p class="lede">Waitlist members get first access and the founding price. Your address and nothing else — one email from us when it's ready.</p>
+      <form class="wl-form" novalidate>
+        <div class="wl-row">
+          <label class="hp" aria-hidden="true">Company <input type="text" name="company" tabindex="-1" autocomplete="off"></label>
+          <input type="email" name="email" required placeholder="you@example.com" aria-label="Your email address" autocomplete="email">
+          <button class="cta" type="submit">Join the waitlist</button>
+        </div>
+        <label class="wl-consent"><input type="checkbox" name="consent">
+          <span>Email me when Paysavr opens. That's the only thing this address is used for, and you can leave the list any time.</span></label>
+        <span class="wl-status" role="status"></span>
+      </form>
+      <noscript><span class="cta-note">Email <a href="mailto:hello@paysavr.com?subject=Waitlist">hello@paysavr.com</a> with the subject "Waitlist" to join.</span></noscript>
     </div>
   </section>
 </main>
+
+<script>
+(function(){
+  var API = "https://paysavr-waitlist-func.azurewebsites.net/api/waitlist";
+  var FALLBACK = 'Something went wrong on our end — email <a href="mailto:hello@paysavr.com?subject=Waitlist">hello@paysavr.com</a> with the subject "Waitlist" and you\'re in.';
+  document.querySelectorAll(".wl-form").forEach(function(form){
+    form.addEventListener("submit", function(ev){
+      ev.preventDefault();
+      var email = form.email.value.trim();
+      var status = form.querySelector(".wl-status");
+      status.classList.remove("err");
+      if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)){
+        status.classList.add("err");
+        status.textContent = "That doesn't look like an email address — check for typos.";
+        form.email.focus();
+        return;
+      }
+      if(!form.consent.checked){
+        status.classList.add("err");
+        status.textContent = "Please tick the box so we know it's OK to email you at launch.";
+        return;
+      }
+      var btn = form.querySelector("button");
+      btn.disabled = true;
+      status.textContent = "Adding you…";
+      fetch(API, {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({email: email, consent: true, company: form.company.value})
+      }).then(function(r){ return r.ok ? r.json() : Promise.reject(); })
+      .then(function(){
+        var done = document.createElement("p");
+        done.className = "wl-done";
+        done.innerHTML = 'You’re on the list. <small>We’ll email you once, when Paysavr opens. Change your mind before then? Write to hello@paysavr.com and we’ll remove you.</small>';
+        form.replaceWith(done);
+      })
+      .catch(function(){
+        btn.disabled = false;
+        status.classList.add("err");
+        status.innerHTML = FALLBACK;
+      });
+    });
+  });
+})();
+</script>
 
 <footer class="site">
   <div class="wrap">
