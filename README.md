@@ -25,4 +25,4 @@ Guardrails (validation brief 2026-07-22): no financial advice, no financial
 data collected, no Plaid/fintech code in this repo — this phase proves demand
 only.
 
-© 2026 Animum Rege LLC.
+© 2026 PaySavr
